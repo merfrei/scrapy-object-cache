@@ -19,8 +19,10 @@ class MokeskinAPI(object):
         self.tag_name = tag_name
         self.ttl = ttl
 
-    def _mokeskin_url(self, key=None):
-        mk_route = 'items'
+    def _mokeskin_url(self, key=None, exists=False):
+        mk_route = '/items'
+        if exists:
+            mk_route = '/exists'
         mk_query = 'tag={}&api_key={}'.format(self.tag_name, self.api_key)
         url = urljoin(self.host, mk_route)
         if key is not None:
@@ -54,8 +56,7 @@ class MokeskinAPI(object):
                                    'URL: {}, CODE: {}'.format(mk_url, stat_code))
 
     def exists(self, key):
-        mk_url = self._mokeskin_url(item=key)
-        mk_url += '&exists=1'
+        mk_url = self._mokeskin_url(item=key, exists=True)
         resp = requests.get(mk_url)
         stat_code = resp.status_code
         if stat_code == 404:
