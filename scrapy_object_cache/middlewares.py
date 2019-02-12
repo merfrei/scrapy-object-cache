@@ -228,14 +228,13 @@ class ScrapyObjectDownloaderMiddleware(object):
             raise NotConfigured(
                 'ERROR: You must setup OBJECT_CACHE_ITEM_LOADER in settings.py')
 
-        loader_conf_path = crawler.settings.get('OBJECT_CACHE_ITEM_LOADER_CONFIG', None)
-        if loader_conf_path is None:
+        loader_conf = crawler.settings.get('OBJECT_CACHE_ITEM_LOADER_CONFIG', None)
+        if loader_conf is None:
             raise NotConfigured(
                 'ERROR: You must setup OBJECT_CACHE_ITEM_LOADER_CONFIG in settings.py')
 
         item_cls = cls.get_attr_from_path(item_path)
         loader_cls = cls.get_attr_from_path(loader_path)
-        loader_conf = cls.get_attr_from_path(loader_conf_path)
 
         return cls(mk_api, item_cls, loader_cls, loader_conf, crawler.spider)
 
