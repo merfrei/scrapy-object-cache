@@ -64,11 +64,15 @@ def get_mk_api_from_crawler(crawler):
 
 
 def convert_item_to_dict(item):
-    new_item = dict(item)
-    for k in new_item:
-        if isinstance(new_item[k], (Item, dict)):
+    if isinstance(item, list):
+        for ix, _ in enumerate(item):
+            item[ix] = convert_item_to_dict(item[ix])
+    elif isinstance(item, (dict, Item)):
+        new_item = dict(item)
+        for k in new_item:
             new_item[k] = convert_item_to_dict(new_item[k])
-    return new_item
+        return new_item
+    return item
 
 
 class ScrapyObjectSpiderMiddleware(object):
@@ -318,6 +322,8 @@ class ScrapyObjectDownloaderMiddleware(object):
         except MokeskinAPIError as e:
             self._log('Spider Object Cache (Mokeskin ERROR): {!r}'.format(e))
             return None
+        if data is not None:
+            self._log('Spider Object Cache: data found ({})'.format(mk_key))
         return data
 
     def get_and_parse_mokeskin_cache(self, response):
