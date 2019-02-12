@@ -33,7 +33,7 @@ class MokeskinAPI(object):
         return get_api_url(url, mk_query)
 
     def get(self, key):
-        mk_url = self._mokeskin_url(item=key)
+        mk_url = self._mokeskin_url(key=key)
         resp = requests.get(mk_url)
         stat_code = resp.status_code
         if stat_code == 404:
@@ -59,7 +59,7 @@ class MokeskinAPI(object):
                                    'URL: {}, CODE: {}'.format(mk_url, stat_code))
 
     def exists(self, key):
-        mk_url = self._mokeskin_url(item=key, exists=True)
+        mk_url = self._mokeskin_url(key=key, exists=True)
         resp = requests.get(mk_url)
         stat_code = resp.status_code
         if stat_code == 404:
