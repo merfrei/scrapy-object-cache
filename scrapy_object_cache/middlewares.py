@@ -182,7 +182,7 @@ class ScrapyObjectSpiderMiddleware(object):
                     if isinstance(obj, Request):
                         obj_data['_type'] = 'request'
                         obj_data['_data'] = self._serialize_request(obj)
-                    elif isinstance(obj, [dict, Item]):
+                    elif isinstance(obj, (dict, Item)):
                         obj_data['_type'] = 'item'
                         obj_data['_data'] = self._serialize_item(obj)
                     else:
