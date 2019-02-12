@@ -22,7 +22,7 @@ TAG_NAME = 'scrapy_spiders'  # Default Tag Name for Mokeskin stored data
 MOKESKIN_TTL = 60 * 60 * 6  # Default TTL: 6 hours
 
 
-def check_if_is_enabled(self, request, spider):
+def check_if_is_enabled(request, spider):
     is_enabled = request.meta.get('cache_object_enabled')
     if is_enabled is None:
         is_enabled = getattr(spider, 'cache_object_enabled', False)
