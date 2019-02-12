@@ -123,23 +123,6 @@ class ScrapyObjectSpiderMiddleware(object):
     def _serialize_item(self, item):
         return convert_item_to_dict(item)
 
-    def get_data(self, spider, request):
-        """Get data from Mokeskin for spider + request
-
-        @type spider: Spider
-        @param spider: the spider which is running the current crawl
-
-        @type request: Request
-        @param request: the current request
-        """
-        mk_key = get_spider_request_key(spider, request)
-        try:
-            data = self.mk_api.get(mk_key)
-        except MokeskinAPIError as e:
-            spider.log('Spider Object Cache (Mokeskin ERROR): {!r}'.format(e))
-            return None
-        return data
-
     def post_data(self, spider, request, data, ttl=None):
         """Post data to Mokeskin for spider + request
 
@@ -334,11 +317,11 @@ class ScrapyObjectDownloaderMiddleware(object):
             obj_type = mk_obj['_type']
             if obj_type == 'request':
                 yield self._deserialize_request(
-                    data=mk_obj['data'],
+                    data=mk_obj['_data'],
                     spider=self.spider)
             elif obj_type == 'item':
                 yield self._deserialize_item(
-                    data=mk_obj['data'],
+                    data=mk_obj['_data'],
                     response=response)
 
     def process_request(self, request, spider):
