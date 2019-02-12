@@ -296,7 +296,8 @@ class ScrapyObjectDownloaderMiddleware(object):
     def _dummy_request(self, mk_key):
         return Request('file:///etc/hosts',
                        meta={'mk_key': mk_key,
-                             'keep_session': True},
+                             'keep_session': True,
+                             'cache_object_enabled': False},
                        callback=self.get_and_parse_mokeskin_cache,
                        dont_filter=True)
 
