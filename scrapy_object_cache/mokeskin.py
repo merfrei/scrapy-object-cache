@@ -41,7 +41,7 @@ class MokeskinAPI(object):
         elif stat_code != 200:
             raise MokeskinAPIError('[GET] ERROR - No 200 response '
                                    'URL: {}, CODE: {}'.format(mk_url, stat_code))
-        return resp.json()['data']
+        return resp.json()['data']['data']
 
     def post(self, key, data, ttl=None):
         mk_url = self._mokeskin_url()
