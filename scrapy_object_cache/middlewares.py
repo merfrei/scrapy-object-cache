@@ -63,6 +63,14 @@ def get_mk_api_from_crawler(crawler):
                        ttl=mk_ttl)
 
 
+def convert_item_to_dict(item):
+    new_item = dict(item)
+    for k in new_item:
+        if isinstance(new_item[k], (Item, dict)):
+            new_item[k] = convert_item_to_dict(new_item[k])
+    return new_item
+
+
 class ScrapyObjectSpiderMiddleware(object):
 
     @classmethod
@@ -109,7 +117,7 @@ class ScrapyObjectSpiderMiddleware(object):
         return request_dt
 
     def _serialize_item(self, item):
-        return dict(item)
+        return convert_item_to_dict(item)
 
     def get_data(self, spider, request):
         """Get data from Mokeskin for spider + request
