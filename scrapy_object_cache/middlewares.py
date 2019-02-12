@@ -172,6 +172,7 @@ class ScrapyObjectSpiderMiddleware(object):
         """Store Requests and Items into Mokeskin"""
         use_cache = check_if_is_enabled(response.request, spider)
         if use_cache:
+            result = list(result)
             key_exists = self.exists_data(spider, response.request)
             # Check if there is some cached data existing before
             if not key_exists:
