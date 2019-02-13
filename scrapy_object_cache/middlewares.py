@@ -85,8 +85,11 @@ class ScrapyObjectSpiderMiddleware(object):
     def __init__(self, mk_api):
         self.mk_api = mk_api
 
+    def get_spider_ttl(self, spider):
+        return getattr(spider, 'mokeskin_ttl', None)
+
     def get_request_ttl(self, request):
-        return request.meta.get('MOKESKIN_TTL', None)
+        return request.meta.get('mokeskin_ttl', None)
 
     def get_spider_request_key(self, spider, request):
         request_key = request_fingerprint(request)
@@ -185,8 +188,10 @@ class ScrapyObjectSpiderMiddleware(object):
                                    'unknown object => {!r}'.format(obj))
                         continue
                     data.append(obj_data)
-                req_ttl = self.get_request_ttl(response.request)
-                self.post_data(spider, response.request, data, req_ttl)
+                ttl = self.get_request_ttl(response.request)
+                if ttl is None:
+                    ttl = self.get_spider_ttl(spider)
+                self.post_data(spider, response.request, data, ttl)
         return result
 
 
