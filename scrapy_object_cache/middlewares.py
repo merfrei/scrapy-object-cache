@@ -113,7 +113,7 @@ class ScrapyObjectSpiderMiddleware(object):
             'method': request.method,
             'body': request.body,
             'headers': request.headers,
-            'meta': request.meta,
+            'meta': convert_item_to_dict(request.meta),
             'dont_filter': request.dont_filter,
             'cookies': request.cookies,
         }
