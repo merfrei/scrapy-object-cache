@@ -275,13 +275,20 @@ class ScrapyObjectDownloaderMiddleware(object):
 
     def _deserialize_item(self, data, response):
         loader = self.loader_cls(item=self.item_cls(), response=response)
+        metadata = None
         for k, v in data.items():
+            if k == 'metadata':
+                metadata = v
+                continue
             fld = k
             val = v
             if k in self.loader_conf:
                 val = self.loader_conf[k](v)
             loader.add_value(fld, val)
-        return loader.load_item()
+        item = loader.load_item()
+        if metadata is not None:
+            item['metadata'] = metadata
+        return item
 
     def _dummy_request(self, mk_key):
         return Request('file:///etc/hosts',
