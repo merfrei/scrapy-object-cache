@@ -178,6 +178,8 @@ class ScrapyObjectSpiderMiddleware(object):
                 for obj in result:
                     obj_data = {'_type': '', '_data': None}
                     if isinstance(obj, Request):
+                        if obj.meta.get('dont_cache_object', False):
+                            continue
                         obj_data['_type'] = 'request'
                         obj_data['_data'] = self._serialize_request(obj)
                     elif isinstance(obj, (dict, Item)):
