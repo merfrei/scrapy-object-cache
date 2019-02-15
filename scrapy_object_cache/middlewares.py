@@ -330,7 +330,7 @@ class ScrapyObjectDownloaderMiddleware(object):
         @type mk_key: string
         @param mk_key: Mokeskin key
         """
-        data = self.get_data()
+        data = self.get_data(mk_key)
         return (not data)
 
     def get_and_parse_mokeskin_cache(self, response):
