@@ -190,10 +190,11 @@ class ScrapyObjectSpiderMiddleware(object):
                                    'unknown object => {!r}'.format(obj))
                         continue
                     data.append(obj_data)
-                ttl = self.get_request_ttl(response.request)
-                if ttl is None:
-                    ttl = self.get_spider_ttl(spider)
-                self.post_data(spider, response.request, data, ttl)
+                if data:
+                    ttl = self.get_request_ttl(response.request)
+                    if ttl is None:
+                        ttl = self.get_spider_ttl(spider)
+                    self.post_data(spider, response.request, data, ttl)
         return result
 
 
@@ -324,6 +325,14 @@ class ScrapyObjectDownloaderMiddleware(object):
             self._log('Spider Object Cache: data found ({})'.format(mk_key))
         return data
 
+    def empty_data(self, mk_key):
+        """
+        @type mk_key: string
+        @param mk_key: Mokeskin key
+        """
+        data = self.get_data()
+        return (not data)
+
     def get_and_parse_mokeskin_cache(self, response):
         mk_key = response.meta['mk_key']
         data = self.get_data(mk_key)
@@ -346,4 +355,6 @@ class ScrapyObjectDownloaderMiddleware(object):
         if use_cache:
             mk_key = get_spider_request_key(spider, request)
             if self.exists_data(mk_key):
-                return self._dummy_request(mk_key)
+                if not self.empty_data(mk_key):
+                    self._log('Spider Object Cache [WARNING]: empty data found ({})'.format(mk_key))
+                    return self._dummy_request(mk_key)
