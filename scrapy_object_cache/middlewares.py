@@ -274,7 +274,7 @@ class ScrapyObjectDownloaderMiddleware(object):
         return req
 
     def _deserialize_item(self, data, response):
-        loader = self.loader(item=self.item_cls(), response=response)
+        loader = self.loader_cls(item=self.item_cls(), response=response)
         for k, v in data.items():
             fld = k
             val = v
