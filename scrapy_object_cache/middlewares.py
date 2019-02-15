@@ -280,7 +280,7 @@ class ScrapyObjectDownloaderMiddleware(object):
             val = v
             if k in self.loader_conf:
                 val = self.loader_conf[k](v)
-            loader.load_value(fld, val)
+            loader.add_value(fld, val)
         return loader.load_item()
 
     def _dummy_request(self, mk_key):
