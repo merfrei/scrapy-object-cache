@@ -46,7 +46,7 @@ At last, you need to add the Mokeskin config:
 
 ```python
 MOKESKIN_HOST = 'http://127.0.0.1:5678'  # Please put a valid host URL
-MOKESKIN_API_KEY = '1234'  # The Mokeskin API api key
+MOKESKIN_API_KEY = '1234'  # The Mokeskin API key
 MOKESKIN_TAG_NAME = 'cm-spiders-'  # It's a prefix to be added to the object key
 MOKESKIN_TTL = 60 * 60 * 6  # The TTL time. In seconds. After this time, the object will be removed from cache
 ```
