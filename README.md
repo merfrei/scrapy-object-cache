@@ -17,11 +17,7 @@ The **Downloader Middleware** works before the request is made, check if there i
 
 ### Install
 
-Using PIP
 
-```txt
-pip install -e git+ssh://git@bitbucket.org/competitormonitor/scrapy-object-cache.git#egg=scrapy-object-cache
-```
 
 ### Settings
 
