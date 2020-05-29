@@ -33,8 +33,8 @@ Also you should add some config. Specify the main Item class, the Loader to use 
 And also some config for the Items (a dict with the field and the type when need it).
 
 ```python
-OBJECT_CACHE_ITEM = 'product_spiders.items.Product'
-OBJECT_CACHE_ITEM_LOADER = 'product_spiders.items.ProductLoader'
+OBJECT_CACHE_ITEM = 'myproject.items.MyItem'
+OBJECT_CACHE_ITEM_LOADER = 'myproject.items.MyLoader'
 OBJECT_CACHE_ITEM_LOADER_CONFIG = {'stock': int}
 ```
 
@@ -43,7 +43,7 @@ At last, you need to add the Mokeskin config:
 ```python
 MOKESKIN_HOST = 'http://127.0.0.1:5678'  # Please put a valid host URL
 MOKESKIN_API_KEY = '1234'  # The Mokeskin API key
-MOKESKIN_TAG_NAME = 'cm-spiders-'  # It's a prefix to be added to the object key
+MOKESKIN_TAG_NAME = 'my-spiders-'  # It's a prefix to be added to the object key
 MOKESKIN_TTL = 60 * 60 * 6  # The TTL time. In seconds. After this time, the object will be removed from cache
 ```
 
