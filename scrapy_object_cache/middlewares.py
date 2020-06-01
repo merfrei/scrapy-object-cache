@@ -200,7 +200,7 @@ class ScrapyObjectSpiderMiddleware(object):
 
 class ScrapyObjectDownloaderMiddleware(object):
 
-    def __init__(self, mk_api, item_cls, loader_cls, loader_conf, spider):
+    def __init__(self, spider, mk_api, item_cls=None, loader_cls=None, loader_conf=None):
         """ScrapyObjectDownloaderMiddleware
 
         @type item_cls: scrapy.Item
@@ -212,35 +212,30 @@ class ScrapyObjectDownloaderMiddleware(object):
         @type loader_conf: dict
         @param loader_conf: type configuration for some fields (field => type)
         """
+        self.spider = spider
         self.mk_api = mk_api
         self.item_cls = item_cls
         self.loader_cls = loader_cls
-        self.loader_conf = loader_conf
-        self.spider = spider
+        self.loader_conf = loader_conf or {}
+        self.logger = spider.logger
 
     @classmethod
     def from_crawler(cls, crawler):
         mk_api = get_mk_api_from_crawler(crawler)
+        item_cls = None
+        loader_cls = None
 
         item_path = crawler.settings.get('OBJECT_CACHE_ITEM', None)
-        if item_path is None:
-            raise NotConfigured(
-                'ERROR: You must setup OBJECT_CACHE_ITEM in settings.py')
+        if item_path is not None:
+            item_cls = cls.get_attr_from_path(item_path)
 
         loader_path = crawler.settings.get('OBJECT_CACHE_ITEM_LOADER', None)
-        if loader_path is None:
-            raise NotConfigured(
-                'ERROR: You must setup OBJECT_CACHE_ITEM_LOADER in settings.py')
+        if loader_path is not None:
+            loader_cls = cls.get_attr_from_path(loader_path)
 
         loader_conf = crawler.settings.get('OBJECT_CACHE_ITEM_LOADER_CONFIG', None)
-        if loader_conf is None:
-            raise NotConfigured(
-                'ERROR: You must setup OBJECT_CACHE_ITEM_LOADER_CONFIG in settings.py')
 
-        item_cls = cls.get_attr_from_path(item_path)
-        loader_cls = cls.get_attr_from_path(loader_path)
-
-        return cls(mk_api, item_cls, loader_cls, loader_conf, crawler.spider)
+        return cls(crawler.spider, mk_api, item_cls, loader_cls, loader_conf)
 
     @staticmethod
     def get_attr_from_path(path):
@@ -249,10 +244,9 @@ class ScrapyObjectDownloaderMiddleware(object):
         mod = importlib.import_module(mod_path)
         return getattr(mod, attr_str)
 
-    def _log(self, msg):
-        if hasattr(self.spider, 'log'):
-            if callable(self.spider.log):
-                self.spider.log(msg)
+    def _log(self, msg, level='info'):
+        if self.logger is not None:
+            getattr(self.logger, level)(msg)
 
     def _deserialize_request(self, data, spider):
         req = Request(url=data['url'],
@@ -275,6 +269,9 @@ class ScrapyObjectDownloaderMiddleware(object):
         return req
 
     def _deserialize_item(self, data, response):
+        if self.item_cls is None or self.loader_cls is None:
+            # If there is no Item and Loader defined the data is returned as it
+            return data
         loader = self.loader_cls(item=self.item_cls(), response=response)
         metadata = None
         for k, v in data.items():
